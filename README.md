@@ -1,30 +1,34 @@
 # My SQL Codes Customer_Churn_Analysis
 
 ## Data Exploration – Check Distinct Values
+```sql
 SELECT Gender, Count(Gender) as TotalCount,
 Count(Gender) * 1.0 / (Select Count(*) from stg_Churn)  as Percentage
 from stg_Churn
-Group by Gender
-
+Group by Gender;
+```
+```sql
 SELECT Contract, Count(Contract) as TotalCount,
 Count(Contract) * 1.0 / (Select Count(*) from stg_Churn)  as Percentage
 from stg_Churn
-Group by Contract
-
-
+Group by Contract;
+```
+```sql
 SELECT Customer_Status, Count(Customer_Status) as TotalCount, Sum(Total_Revenue) as TotalRev,
 Sum(Total_Revenue) / (Select sum(Total_Revenue) from stg_Churn) * 100  as RevPercentage
 from stg_Churn
 Group by Customer_Status
-
+```
+```sql
 SELECT State, Count(State) as TotalCount,
 Count(State) * 1.0 / (Select Count(*) from stg_Churn)  as Percentage
 from stg_Churn
 Group by State
 Order by Percentage desc
-
+```
 
 ## Data Exploration – Check Nulls
+```sql
 SELECT 
     SUM(CASE WHEN Customer_ID IS NULL THEN 1 ELSE 0 END) AS Customer_ID_Null_Count,
     SUM(CASE WHEN Gender IS NULL THEN 1 ELSE 0 END) AS Gender_Null_Count,
@@ -59,9 +63,11 @@ SELECT
     SUM(CASE WHEN Churn_Category IS NULL THEN 1 ELSE 0 END) AS Churn_Category_Null_Count,
     SUM(CASE WHEN Churn_Reason IS NULL THEN 1 ELSE 0 END) AS Churn_Reason_Null_Count
 FROM stg_Churn;
+```
 
 
 ## Remove null and insert the new data into Prod table
+```sql
 SELECT 
     Customer_ID,
     Gender,
@@ -98,13 +104,15 @@ SELECT
 
 INTO [db_Churn].[dbo].[prod_Churn]
 FROM [db_Churn].[dbo].[stg_Churn];
-
+```
 
 ## Create View for Power BI
+```sql
 Create View vw_ChurnData as
 	select * from prod_Churn where Customer_Status In ('Churned', 'Stayed')
+```
 
-
+```sql
 Create View vw_JoinData as
 	select * from prod_Churn where Customer_Status = 'Joined'
-
+```
